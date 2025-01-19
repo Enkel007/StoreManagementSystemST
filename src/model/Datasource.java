@@ -59,22 +59,15 @@ public class Datasource extends Product {
 
     public Connection conn;
 
-    // Static singleton instance
-    private static Datasource instance;
+    /**
+     * Create an object of Datasource
+     */
+    public static final Datasource instance = new Datasource();
 
-    // Private constructor, used by Singleton pattern
-    private Datasource() {
-
-    }
-
-    // Constructor for testing purposes, allows mock injection
-    public Datasource(Connection conn) {
-        this.conn = conn;
-    }
-
-    public static void setInstance(Datasource mockInstance) {
-        instance = mockInstance;
-    }
+    /**
+     * Make the constructor private so that this class cannot be instantiated
+     */
+    public Datasource() { }
 
     /**
      * Get the only object available
@@ -508,8 +501,7 @@ public class Datasource extends Product {
             queryCustomers.append(COLUMN_USERS_FULLNAME);
             if (sortOrder == ORDER_BY_DESC) {
                 queryCustomers.append(" DESC");
-            }
-            else {
+            } else {
                 queryCustomers.append(" ASC");
             }
         }
@@ -879,8 +871,8 @@ public class Datasource extends Product {
     public Integer countAllCustomers() {
         try (Statement statement = conn.createStatement();
              ResultSet results = statement.executeQuery("SELECT COUNT(*) FROM " + TABLE_USERS +
-                     " WHERE " + COLUMN_USERS_ADMIN + "= 0"
-             )
+                 " WHERE " + COLUMN_USERS_ADMIN + "= 0"
+        )
         ) {
             if (results.next()) {
                 return results.getInt(1);
