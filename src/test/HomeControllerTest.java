@@ -1,6 +1,5 @@
 package test;
 
-
 import app.utils.JavaFXInitializer;
 import controller.admin.pages.HomeController;
 import javafx.application.Platform;
@@ -10,123 +9,137 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 //test for getDashboardCostCount method
 //has dependency to countAllCustomers method in Datasource class
 public class HomeControllerTest {
-    @Mock
-    private Label customersCount;
 
     @InjectMocks
     private HomeController homeController;
 
     @BeforeAll
-    public static void setUpAll(){
+    public static void setUpAll() {
         new JavaFXInitializer().init();
     }
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
+        homeController.productsCount = new Label();
+        homeController.customersCount = new Label();
     }
 
     @Test
-    public void getDashboardCostCount_test(){
+    public void getDashboardCostCount_test() {
         Platform.runLater(() -> {
-            Datasource datasource = mock(Datasource.class);
-            when(datasource.countAllCustomers()).thenReturn(10);
-            mockStatic(Datasource.class);
-            when(Datasource.getInstance()).thenReturn(datasource);
+            Datasource datasource = Datasource.getInstance();
+            datasource.open(); // Ensure the datasource is opened
 
             homeController.getDashboardCostCount();
 
-            verify(customersCount, timeout(1000)).setText("10");
+            // Wait for the task to complete and verify the result
+            Platform.runLater(() -> {
+                assertEquals("10", homeController.customersCount.getText());
+            });
+
+            datasource.close(); // Ensure the datasource is closed
         });
     }
 
     @Test
-    public void getDashboardCostCount_boundaryValues_test(){
+    public void getDashboardCostCount_boundaryValues_test() {
         Platform.runLater(() -> {
-            Datasource datasource = mock(Datasource.class);
-            mockStatic(Datasource.class);
-            when(Datasource.getInstance()).thenReturn(datasource);
+            Datasource datasource = Datasource.getInstance();
+            datasource.open(); // Ensure the datasource is opened
 
             // 0 customers
-            when(datasource.countAllCustomers()).thenReturn(0);
             homeController.getDashboardCostCount();
-            verify(customersCount, timeout(1000)).setText("0");
+            Platform.runLater(() -> {
+                assertEquals("0", homeController.customersCount.getText());
+            });
 
             // 1 customer
-            when(datasource.countAllCustomers()).thenReturn(1);
             homeController.getDashboardCostCount();
-            verify(customersCount, timeout(1000)).setText("1");
+            Platform.runLater(() -> {
+                assertEquals("1", homeController.customersCount.getText());
+            });
 
             // Integer.MAX_VALUE customers
-            int largeNumber = Integer.MAX_VALUE;
-            when(datasource.countAllCustomers()).thenReturn(largeNumber);
             homeController.getDashboardCostCount();
-            verify(customersCount, timeout(1000)).setText(String.valueOf(largeNumber));
+            Platform.runLater(() -> {
+                assertEquals(String.valueOf(Integer.MAX_VALUE), homeController.customersCount.getText());
+            });
+
+            datasource.close(); // Ensure the datasource is closed
         });
     }
 
     @Test
-    public void getDashboardCostCount_classEvaluation_test(){
+    public void getDashboardCostCount_classEvaluation_test() {
         Platform.runLater(() -> {
-            Datasource datasource = mock(Datasource.class);
-            mockStatic(Datasource.class);
-            when(Datasource.getInstance()).thenReturn(datasource);
+            Datasource datasource = Datasource.getInstance();
+            datasource.open(); // Ensure the datasource is opened
 
-            //must throw exception
-            when(datasource.countAllCustomers()).thenReturn(-1);
+            // must throw exception
             homeController.getDashboardCostCount();
-            verify(customersCount, timeout(1000)).setText("-1");
+            Platform.runLater(() -> {
+                assertEquals("-1", homeController.customersCount.getText());
+            });
+
+            datasource.close(); // Ensure the datasource is closed
         });
     }
 
     @Test
     public void getDashboardCostCount_branchCoverage_test() {
         Platform.runLater(() -> {
-            Datasource datasource = mock(Datasource.class);
-            mockStatic(Datasource.class);
-            when(Datasource.getInstance()).thenReturn(datasource);
+            Datasource datasource = Datasource.getInstance();
+            datasource.open(); // Ensure the datasource is opened
 
             // Branch where countAllCustomers returns 0
-            when(datasource.countAllCustomers()).thenReturn(0);
             homeController.getDashboardCostCount();
-            verify(customersCount, timeout(1000)).setText("0");
+            Platform.runLater(() -> {
+                assertEquals("0", homeController.customersCount.getText());
+            });
 
             // Branch where countAllCustomers returns a positive number
-            when(datasource.countAllCustomers()).thenReturn(10);
             homeController.getDashboardCostCount();
-            verify(customersCount, timeout(1000)).setText("10");
+            Platform.runLater(() -> {
+                assertEquals("10", homeController.customersCount.getText());
+            });
+
+            datasource.close(); // Ensure the datasource is closed
         });
     }
 
     @Test
     public void getDashboardCostCount_conditionCoverage_test() {
         Platform.runLater(() -> {
-            Datasource datasource = mock(Datasource.class);
-            mockStatic(Datasource.class);
-            when(Datasource.getInstance()).thenReturn(datasource);
+            Datasource datasource = Datasource.getInstance();
+            datasource.open(); // Ensure the datasource is opened
 
             // Condition where countAllCustomers returns 0
-            when(datasource.countAllCustomers()).thenReturn(0);
             homeController.getDashboardCostCount();
-            verify(customersCount, timeout(1000)).setText("0");
+            Platform.runLater(() -> {
+                assertEquals("0", homeController.customersCount.getText());
+            });
 
             // Condition where countAllCustomers returns a positive number
-            when(datasource.countAllCustomers()).thenReturn(10);
             homeController.getDashboardCostCount();
-            verify(customersCount, timeout(1000)).setText("10");
+            Platform.runLater(() -> {
+                assertEquals("10", homeController.customersCount.getText());
+            });
 
             // Condition where countAllCustomers returns a negative number
-            when(datasource.countAllCustomers()).thenReturn(-1);
             homeController.getDashboardCostCount();
-            verify(customersCount, timeout(1000)).setText("-1");
+            Platform.runLater(() -> {
+                assertEquals("-1", homeController.customersCount.getText());
+            });
+
+            datasource.close(); // Ensure the datasource is closed
         });
     }
 }

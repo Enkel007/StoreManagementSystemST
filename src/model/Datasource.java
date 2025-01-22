@@ -67,7 +67,13 @@ public class Datasource extends Product {
     /**
      * Make the constructor private so that this class cannot be instantiated
      */
-    public Datasource() { }
+    public Datasource() {
+
+    }
+
+    public Datasource(Connection conn) {
+        this.conn = conn;
+    }
 
     /**
      * Get the only object available
@@ -116,7 +122,9 @@ public class Datasource extends Product {
      * @return List         Returns Product array list.
      * @since                   1.0.0
      */
-    public List<Product> getAllProducts(int sortOrder) {
+    public List<Product> getAllProducts(
+            int sortOrder
+    ) {
 
         StringBuilder queryProducts = queryProducts();
 
@@ -237,7 +245,7 @@ public class Datasource extends Product {
      * @return StringBuilder
      * @since                   1.0.0
      */
-    private StringBuilder queryProducts() {
+    public StringBuilder queryProducts() {
         return new StringBuilder("SELECT " +
                 TABLE_PRODUCTS + "." + COLUMN_PRODUCTS_ID + ", " +
                 TABLE_PRODUCTS + "." + COLUMN_PRODUCTS_NAME + ", " +
